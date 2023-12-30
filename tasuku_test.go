@@ -3,7 +3,6 @@ package tasuku
 import (
 	"errors"
 	"testing"
-	"time"
 )
 
 func TestTaskSuccess(test *testing.T) {
@@ -64,19 +63,4 @@ func TestTaskCancel(test *testing.T) {
 	if err == nil {
 		test.Error("received nil error")
 	}
-}
-
-func TestTaskStuff(test *testing.T) {
-	Task("asd", func(t *TaskCtx) (int, error) {
-		<-time.After(time.Second)
-		t.SetTitle("new title")
-		<-time.After(time.Second)
-		t.SetWarning("some warning")
-		<-time.After(time.Second)
-		t.SetError(errors.New("some error"))
-
-		return 1, nil
-	})
-
-	<-time.After(time.Second)
 }
