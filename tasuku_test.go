@@ -17,7 +17,23 @@ func TestTaskSetTitle(test *testing.T) {
 	num, err := Task("task 1", func(t *TaskCtx) (int, error) {
 		t.SetTitle("success")
 
-		if t.title != "success" || t.status != statusSuccess {
+		if t.title != "success" || t.status != "" {
+			test.Fail()
+		}
+
+		return 1, nil
+	})
+
+	if num != 1 || err != nil {
+		test.Fail()
+	}
+}
+
+func TestTaskSetDetail(test *testing.T) {
+	num, err := Task("task 2", func(t *TaskCtx) (int, error) {
+		t.SetDetail("detail")
+
+		if t.detail != "detail" || t.status != "" {
 			test.Fail()
 		}
 
@@ -33,7 +49,7 @@ func TestTaskSetWarning(test *testing.T) {
 	num, err := Task("task 2", func(t *TaskCtx) (int, error) {
 		t.SetWarning("warning")
 
-		if t.title != "warning" || t.status != statusWarning {
+		if t.detail != "warning" || t.status != statusWarning {
 			test.Fail()
 		}
 
