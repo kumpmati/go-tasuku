@@ -1,4 +1,4 @@
-module github.com/kumpmati/tasuku
+module github.com/kumpmati/go-tasuku
 
 go 1.21
 
