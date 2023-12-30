@@ -9,7 +9,8 @@ on:
 
 jobs:
 
-  build:
+  build-and-test:
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -20,7 +21,7 @@ jobs:
         go-version: '1.20'
 
     - name: Build
-      run: go build -v
+      run: go build -v ./...
 
     - name: Test
       run: go test -v ./...
