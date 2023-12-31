@@ -20,7 +20,7 @@ var (
 	cancelledChar = "-"
 	arrowChar     = "→"
 
-	loadingCharacters = []string{"⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽", "⣾"}
+	loadingChars = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 )
 
 // print starts an infinite loop that prints the current status
@@ -61,7 +61,7 @@ func statusIcon(tc *TaskCtx, frame int) string {
 		return ""
 	case statusSuccess:
 		if tc.ongoing {
-			return color.YellowString(loadingCharacters[frame%len(loadingCharacters)])
+			return color.YellowString(loadingChars[frame%len(loadingChars)])
 		}
 		return color.GreenString(successChar)
 	case statusError:
