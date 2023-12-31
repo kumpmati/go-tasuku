@@ -8,7 +8,7 @@ import (
 const (
 	statusSuccess   = "success"
 	statusWarning   = "warning"
-	statusErr       = "error"
+	statusError     = "error"
 	statusCancelled = "cancelled"
 )
 
@@ -16,10 +16,11 @@ type TaskCtx struct {
 	Context context.Context
 	cancel  context.CancelFunc
 
-	status string // "" | "success" | "warning" | "error" | "cancelled"
-	title  string
-	detail string
-	err    error
+	ongoing bool
+	status  string // "success" | "warning" | "error" | "cancelled"
+	title   string
+	detail  string
+	err     error
 }
 
 // Task runs the given function, and prints the status of the task
@@ -27,63 +28,71 @@ type TaskCtx struct {
 func Task[R any](title string, fn func(t *TaskCtx) (R, error)) (R, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
-	task := TaskCtx{
+	tc := TaskCtx{
 		Context: ctx,
 		cancel:  cancel,
 		title:   title,
-		status:  "",
+		status:  statusSuccess,
+		ongoing: true,
 	}
 
 	wg := sync.WaitGroup{}
 
-	go task.print(&wg)
+	go tc.print(&wg)
 
-	result, err := fn(&task)
+	result, err := fn(&tc)
+
+	tc.ongoing = false
 
 	if err != nil {
-		task.SetError(err)
+		tc.SetError(err)
 	}
 
 	cancel()  // cancel the context, this tells the `task.print` loop to stop.
 	wg.Wait() // wait for print to finish
 
-	return result, task.err
+	return result, tc.err
 }
 
-// SetTitle clears the Error and updates the Title of the task.
-// It does not cancel the task context. Any previous errors will be cleared.
+// SetTitle updates the title of the task.
 func (tc *TaskCtx) SetTitle(text string) {
-	tc.err = nil
 	tc.title = text
-	tc.status = ""
 }
 
-// SetWarning changes the task title and sets the status to "warning",
-// but does not cancel the task context. Any previous errors will be cleared.
+// SetWarning sets the task state to "warning", updates the task detail text.
 func (tc *TaskCtx) SetWarning(text string) {
-	tc.err = nil
 	tc.detail = text
 	tc.status = statusWarning
 }
 
-// SetError changes the task title and sets the status to "error",
-// but does not cancel the task context.
+// SetError changes the task title and sets the status to "error".
 func (tc *TaskCtx) SetError(err error) {
 	tc.err = err
 	tc.detail = tc.err.Error()
-	tc.status = statusErr
+	tc.status = statusError
 }
 
-// SetDetail changes the detail text that is shown after the task is done.
+// ClearError clears the current error and detail, and changes the state to "success"
+func (tc *TaskCtx) ClearError() {
+	tc.err = nil
+	tc.status = statusSuccess
+	tc.detail = ""
+}
+
+// SetDetail changes the detail text that is shown after the task completes.
 func (tc *TaskCtx) SetDetail(text string) {
 	tc.detail = text
 }
 
-// Cancel changes the task title, sets the status to "cancelled"
-// and cancels the task context.
+// Cancel cancels the task context and sets the task state to "cancelled".
+// If `reason` is non-empty, it's set as the task detail.
 func (tc *TaskCtx) Cancel(reason string) {
 	tc.err = context.Canceled
 	tc.status = statusCancelled
-	tc.title = reason
+	if reason != "" {
+		tc.detail = reason
+	}
+
+	tc.ongoing = false
 	tc.cancel()
 }
