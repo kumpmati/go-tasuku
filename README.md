@@ -17,9 +17,8 @@ go get github.com/kumpmati/go-tasuku
 🚧 This library is still very much in progress, so some features from the JavaScript counterpart haven't been implemented yet:
 
 - [x] Single task visualization
-- [ ] Support for parallel tasks
-- [ ] Support for nested tasks
-- [ ] clearing completed tasks
+- [ ] TODO: parallel, nested & grouped tasks
+- [ ] TODO: clearing completed tasks
 
 ## Usage
 
