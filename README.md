@@ -9,7 +9,7 @@ This is a go implementation of the great [privatenumber/tasuku](https://github.c
 ## Install
 
 ```
-go get github.com/kumpmati/go-tasuku
+go get -u github.com/kumpmati/go-tasuku
 ```
 
 ## Features
