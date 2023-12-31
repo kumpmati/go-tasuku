@@ -128,7 +128,7 @@ result, err := tasuku.Task("my task", func(t *tasuku.TaskCtx) (int, error) {
 //  → second error
 ```
 
-To clear any error set by `t.SetError`, you can call `t.SetTitle` before returning from the task.
+To clear any error set by `t.SetError`, you can call `t.ClearError` before returning from the task.
 
 ### Cancel
 
