@@ -128,3 +128,24 @@ result, err := tasuku.Task("my task", func(t *tasuku.TaskCtx) (int, error) {
 ```
 
 To clear any error set by `t.SetError`, you can call `t.SetTitle` before returning from the task.
+
+### Cancel
+
+```go
+result, err := tasuku.Task("my task", func(t *tasuku.TaskCtx) (int, error) {
+  if condition {
+    t.Cancel("cancellation reason")
+    return 1, nil // return nil error so that the cancellation error is returned to caller
+  }
+
+  return 6, errors.New("custom error")
+})
+
+// condition == true:
+// - my task
+//  → cancellation reason
+
+// condition == false:
+// ✖ my task
+//  → custom error
+```

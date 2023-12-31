@@ -1,6 +1,7 @@
 package tasuku
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
@@ -76,7 +77,19 @@ func TestTaskCancel(test *testing.T) {
 		return 1, nil
 	})
 
-	if err == nil {
-		test.Error("received nil error")
+	if !errors.Is(err, context.Canceled) {
+		test.Error("expected context canceled error")
+	}
+
+	customErr := errors.New("my error")
+
+	_, err = Task("task 5", func(t *TaskCtx) (int, error) {
+		t.Cancel("some reason")
+
+		return 1, customErr
+	})
+
+	if !errors.Is(err, customErr) {
+		test.Error("expected custom error")
 	}
 }
