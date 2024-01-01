@@ -8,23 +8,34 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
 jobs:
-  build-and-test:
+  build:
     name: Build and test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.18'
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.18'
+      - name: Build
+        run: go build -v ./...
+      - name: Test
+        run: go test -v ./...
       
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event.action }} == 'closed'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Bump version
+        if: github.event.pull_request.merged
+        uses: K-Phoen/semver-release-action@master
+        with:
+          release_branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

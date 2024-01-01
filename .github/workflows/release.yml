@@ -1,19 +1,15 @@
 name: Release
 
 on:
-  pull_request:
-    types: [closed]
+  release:
+    types:
+      - published
 
 jobs:
-  build:
+  bump-index:
     runs-on: ubuntu-latest
-
-    if: github.event.pull_request.merged
-    
     steps:
-      - name: Tag
-        uses: K-Phoen/semver-release-action@master
-        with:
-          release_branch: main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Ping endpoint
+        run: curl "https://proxy.golang.org/github.com/kumpmati/go-tasuku/@v/$(git describe HEAD --tags --abbrev=0).info"
