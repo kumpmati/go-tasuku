@@ -17,3 +17,6 @@ jobs:
           release_branch: main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to pkg.go.dev
+        run: GOPROXY=proxy.golang.org go list -m github.com/kumpmati/go-tasuku
