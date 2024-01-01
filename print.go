@@ -26,25 +26,28 @@ var (
 // print starts an infinite loop that prints the current status
 // of the task to the terminal. The loop is stopped when the task context
 // is cancelled, printing the final status of the task before returning.
-func (tc *TaskCtx) print(wg *sync.WaitGroup) {
+func (tc *TaskCtx) print(s <-chan taskState, wg *sync.WaitGroup) {
 	wg.Add(1)
 
-	frame := 0
+	var frame int
+	var state taskState
 
 	for {
 		select {
+		case newState := <-s:
+			state = newState
 
 		case <-time.After(time.Second / framerate):
 			clearRow()
-			fmt.Print(statusIcon(tc, frame) + " " + tc.title)
+			fmt.Print(statusIcon(state.status, true, frame) + " " + state.title)
 			frame++
 
 		case <-tc.Context.Done():
 			clearRow()
-			fmt.Print(statusIcon(tc, 0)+" "+color.HiWhiteString(tc.title), "\n")
+			fmt.Print(statusIcon(state.status, false, 0)+" "+color.HiWhiteString(state.title), "\n")
 
-			if tc.detail != "" {
-				fmt.Print("  ", arrowChar+" "+tc.detail, "\n")
+			if state.detail != "" {
+				fmt.Print("  ", arrowChar+" "+state.detail, "\n")
 			}
 
 			wg.Done()
@@ -55,12 +58,12 @@ func (tc *TaskCtx) print(wg *sync.WaitGroup) {
 
 // statusString returns the string to be printed based on
 // the current status of the task.
-func statusIcon(tc *TaskCtx, frame int) string {
-	switch tc.status {
+func statusIcon(status string, ongoing bool, frame int) string {
+	switch status {
 	default:
 		return ""
 	case statusSuccess:
-		if tc.ongoing {
+		if ongoing {
 			return color.YellowString(loadingChars[frame%len(loadingChars)])
 		}
 		return color.GreenString(successChar)
