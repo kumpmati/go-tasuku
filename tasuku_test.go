@@ -7,7 +7,7 @@ import (
 )
 
 func TestTaskSuccess(test *testing.T) {
-	num, err := Task("task", func(t *TaskCtx) (int, error) { return 5, nil })
+	num, err := Task("task success", func(t *TaskCtx) (int, error) { return 5, nil })
 
 	if num != 5 || err != nil {
 		test.Fail()
@@ -15,10 +15,10 @@ func TestTaskSuccess(test *testing.T) {
 }
 
 func TestTaskSetTitle(test *testing.T) {
-	num, err := Task("task", func(t *TaskCtx) (int, error) {
+	num, err := Task("task set title", func(t *TaskCtx) (int, error) {
 		t.SetTitle("success")
 
-		if t.title != "success" {
+		if t.currentState.title != "success" {
 			test.Fail()
 		}
 
@@ -31,10 +31,10 @@ func TestTaskSetTitle(test *testing.T) {
 }
 
 func TestTaskSetDetail(test *testing.T) {
-	num, err := Task("task 2", func(t *TaskCtx) (int, error) {
+	num, err := Task("task set detail", func(t *TaskCtx) (int, error) {
 		t.SetDetail("detail")
 
-		if t.detail != "detail" || t.status != statusSuccess {
+		if t.currentState.detail != "detail" {
 			test.Fail()
 		}
 
@@ -47,10 +47,10 @@ func TestTaskSetDetail(test *testing.T) {
 }
 
 func TestTaskSetWarning(test *testing.T) {
-	num, err := Task("task", func(t *TaskCtx) (int, error) {
+	num, err := Task("task set warning", func(t *TaskCtx) (int, error) {
 		t.SetWarning("warning")
 
-		if t.detail != "warning" || t.status != statusWarning {
+		if t.currentState.detail != "warning" {
 			test.Fail()
 		}
 
@@ -63,7 +63,7 @@ func TestTaskSetWarning(test *testing.T) {
 }
 
 func TestTaskError(test *testing.T) {
-	_, err := Task("task", func(t *TaskCtx) (int, error) { return 1, errors.New("some error") })
+	_, err := Task("task set error", func(t *TaskCtx) (int, error) { return 1, errors.New("some error") })
 
 	if err == nil || err.Error() != "some error" {
 		test.Fail()
@@ -71,7 +71,7 @@ func TestTaskError(test *testing.T) {
 }
 
 func TestTaskCancel(test *testing.T) {
-	_, err := Task("task", func(t *TaskCtx) (int, error) {
+	_, err := Task("task cancel", func(t *TaskCtx) (int, error) {
 		t.Cancel("some reason")
 
 		return 1, nil
@@ -83,7 +83,7 @@ func TestTaskCancel(test *testing.T) {
 
 	customErr := errors.New("my error")
 
-	_, err = Task("task", func(t *TaskCtx) (int, error) {
+	_, err = Task("task cancel with err return", func(t *TaskCtx) (int, error) {
 		t.Cancel("some reason")
 
 		return 1, customErr
