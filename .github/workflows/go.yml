@@ -6,9 +6,11 @@ name: Tests
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    types: [opened, synchronize]
 
 jobs:
-
   build-and-test:
     name: Build and test
     runs-on: ubuntu-latest
