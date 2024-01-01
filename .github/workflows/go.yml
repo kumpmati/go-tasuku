@@ -32,7 +32,7 @@ jobs:
     if: ${{ github.event.action }} == 'closed'
     steps:
       - uses: actions/checkout@v3
-      - name: Tag
+      - name: Bump version
         if: github.event.pull_request.merged
         uses: K-Phoen/semver-release-action@master
         with:
