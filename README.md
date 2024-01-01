@@ -1,6 +1,8 @@
 # go-tasuku
 
 [![Tests](https://github.com/kumpmati/go-tasuku/actions/workflows/go.yml/badge.svg)](https://github.com/kumpmati/go-tasuku/actions/workflows/go.yml)
+![release](https://img.shields.io/github/v/release/kumpmati/go-tasuku)
+
 
 The minimal task visualizer for go.
 
