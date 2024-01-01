@@ -87,7 +87,7 @@ result, err := tasuku.Task("my task", func(t *tasuku.TaskCtx) (int, error) {
 //   → some warning
 ```
 
-### SetError / returning errors
+### SetError / Returning errors
 
 To show an error, either return the error at the end, or call `t.SetError` inside the task.
 
