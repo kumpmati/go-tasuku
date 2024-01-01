@@ -13,11 +13,10 @@ const (
 )
 
 type taskState struct {
-	status  string // "success" | "warning" | "error" | "cancelled"
-	title   string
-	detail  string
-	err     error
-	ongoing bool
+	status string // "success" | "warning" | "error" | "cancelled"
+	title  string
+	detail string
+	err    error
 }
 
 type TaskCtx struct {
@@ -25,7 +24,7 @@ type TaskCtx struct {
 	cancel  context.CancelFunc
 
 	s            chan taskState
-	currentState taskState // current state
+	currentState taskState
 }
 
 // Task runs the given function, and prints the status of the task
