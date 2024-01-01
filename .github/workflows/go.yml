@@ -27,7 +27,9 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-
+      
+      if: github.event.pull_request.merged
+      
     - name: Tag
       uses: K-Phoen/semver-release-action@master
       with:
