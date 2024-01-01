@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize]
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
     name: Release
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.event.action }} == 'closed'
+    if: ${{ github.event_name }} == 'push'
     steps:
       - uses: actions/checkout@v3
       - name: Bump version
@@ -39,3 +39,5 @@ jobs:
           release_branch: main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Ping module index endpoint
+        run: curl "https://proxy.golang.org/github.com/kumpmati/go-tasuku/@v/$(git describe HEAD --tags --abbrev=0).info"
