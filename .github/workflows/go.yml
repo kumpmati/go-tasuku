@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize]
 
 jobs:
   build-and-test:
@@ -20,7 +20,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: '1.18'
 
     - name: Build
       run: go build -v ./...
@@ -28,10 +28,3 @@ jobs:
     - name: Test
       run: go test -v ./...
       
-    - name: Tag
-      if: github.event.pull_request.merged
-      uses: K-Phoen/semver-release-action@master
-      with:
-        release_branch: main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
