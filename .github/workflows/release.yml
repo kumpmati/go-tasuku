@@ -1,0 +1,18 @@
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  release:
+      name: Release
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Bump version
+          uses: K-Phoen/semver-release-action@master
+          with:
+            release_branch: main
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Update module index
+          run: curl "https://proxy.golang.org/github.com/kumpmati/go-tasuku/@v/$(git describe HEAD --tags --abbrev=0).info"
