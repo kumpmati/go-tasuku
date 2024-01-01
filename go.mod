@@ -1,6 +1,6 @@
 module github.com/kumpmati/go-tasuku
 
-go 1.21
+go 1.18
 
 require (
 	github.com/fatih/color v1.16.0
