@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
 jobs:
   build-and-test:
@@ -27,8 +27,9 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-
+      
     - name: Tag
+      if: github.event.pull_request.merged
       uses: K-Phoen/semver-release-action@master
       with:
         release_branch: main
