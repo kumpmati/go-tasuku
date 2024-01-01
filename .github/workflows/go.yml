@@ -6,7 +6,7 @@ name: Tests
 on:
   pull_request:
     branches: [ "main" ]
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
 jobs:
   build:
@@ -22,3 +22,10 @@ jobs:
         run: go build -v ./...
       - name: Test
         run: go test -v -race ./...
+      - name: Bump version
+        if: github.event.pull_request.merged 
+        uses: K-Phoen/semver-release-action@master
+        with:
+          release_branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
