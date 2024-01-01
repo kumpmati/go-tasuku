@@ -14,5 +14,9 @@ jobs:
             release_branch: main
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Set up Go
+          uses: actions/setup-go@v4
+          with:
+            go-version: '1.18'
         - name: Update module index
           run: curl "https://proxy.golang.org/github.com/kumpmati/go-tasuku/@v/$(git describe HEAD --tags --abbrev=0).info"
